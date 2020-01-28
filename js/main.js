@@ -9,6 +9,12 @@ var startLocationY = 130;
 var endLocationY = 630;
 var startPrice = 1000;
 var endPrice = 100000;
+var maxCountOfPhoto = 3;
+var maxPhoto = 10;
+var maxFeatures = 10;
+var maxRoom = 5;
+var maxGuests = 10;
+var maxObject = 8;
 var objectsArray = [];
 
 var template = document.querySelector('#pin').content.querySelector('button');
@@ -49,7 +55,7 @@ var getRandomFeatures = function (count) {
 var getRandomPhotos = function (count) {
   var photosArray = [];
   for (var i = 0; i < count; i++) {
-    photosArray.push('http://o0.github.io/assets/images/tokyo/hotel' + getRandomInt(1, 3) + '.jpg');
+    photosArray.push('http://o0.github.io/assets/images/tokyo/hotel' + getRandomInt(1, maxCountOfPhoto) + '.jpg');
   }
   return photosArray;
 };
@@ -58,20 +64,20 @@ var getRandomObject = function () {
   var location = getRandomLocation();
   return {
     author: {
-      avatar: getRandomAvatar(getRandomInt(1, 8))
+      avatar: getRandomAvatar(getRandomInt(1, maxObject))
     },
     offer: {
       title: 'Заголовок',
       address: location.x + ', ' + location.y,
       price: getRandomInt(startPrice, endPrice),
       type: getRandomType(),
-      rooms: getRandomInt(1, 5),
-      guests: getRandomInt(1, 10),
+      rooms: getRandomInt(1, maxRoom),
+      guests: getRandomInt(1, maxGuests),
       checkin: getRandomCheckinAndCheckout(),
       checkout: getRandomCheckinAndCheckout(),
-      features: getRandomFeatures(getRandomInt(1, 10)),
+      features: getRandomFeatures(getRandomInt(1, maxFeatures)),
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque iaculis ex eu ex rhoncus, et vulputate dui lobortis. Ut sollicitudin tempus maximus. Donec volutpat justo ac augue porta laoreet. Suspendisse quis varius lectus. Pellentesque placerat fermentum lacus id malesuada. Curabitur sit amet turpis quis elit accumsan lobortis nec eget sapien. Etiam consectetur consectetur tortor, quis scelerisque diam. Nam sodales placerat tempus.',
-      photos: getRandomPhotos(getRandomInt(1, 10))
+      photos: getRandomPhotos(getRandomInt(1, maxPhoto))
     },
     location: location
   };
@@ -79,8 +85,8 @@ var getRandomObject = function () {
 
 var createDOMElement = function (data) {
   var element = template.cloneNode(true);
-  element.style.left = data.location.x - 65 / 2 + 'px';
-  element.style.top = data.location.y - 65 - 22 + 'px';
+  element.style.left = data.location.x + 'px';
+  element.style.top = data.location.y + 'px';
   element.querySelector('img').src = data.author.avatar;
   element.querySelector('img').alt = data.offer.title;
   return element;
