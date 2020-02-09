@@ -5,12 +5,15 @@
 var countOfMapPins = 8;
 var availableCheckinAndCheckout = ['12:00', '13:00', '14:00'];
 var availableTypes = ['palace', 'flat', 'house', 'bungalo'];
+// Закомментено по заданию
+/*
 var availableTypesDictionary = {
   palace: 'Дворец',
   flat: 'Квартира',
   house: 'Дом',
   bungalo: 'Бунгало'
 };
+*/
 var availableFeatures = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var startLocationX = 0;
 var startLocationY = 130;
@@ -29,7 +32,8 @@ var adList = [];
 // ---- DOM ЭЛЕМЕНТЫ ----
 
 var templatePin = document.querySelector('#pin').content.querySelector('button');
-var templateCard = document.querySelector('#card').content.querySelector('article');
+// Закомментено по заданию
+// var templateCard = document.querySelector('#card').content.querySelector('article');
 var mapPinMain = document.querySelector('.map__pin--main');
 var mainForm = document.querySelector('.ad-form');
 
@@ -125,6 +129,9 @@ var createPins = function (count) {
 };
 
 // Устанавливает значение параметра или скрывает весь элемент при отсутствии данных
+
+// Закомментено по заданию
+/*
 var setElementParam = function (element, param, value) {
   if (!value) {
     element.style.display = 'none';
@@ -132,8 +139,11 @@ var setElementParam = function (element, param, value) {
     element[param] = value;
   }
 };
+*/
 
 // Добавляет в карточку фотограции или скрывает весь элемент при отсутствии фотографий
+// Закомментено по заданию
+/*
 var setElementPhotoParam = function (element, source) {
   if (!source.offer.photos) {
     element.querySelector('.popup__photo').style.display = 'none';
@@ -148,8 +158,11 @@ var setElementPhotoParam = function (element, source) {
     element.querySelector('.popup__photos').appendChild(imgFragment);
   }
 };
+*/
 
 // Создает и заполняет карточку
+// Закомментено по заданию
+/*
 var createAndInitCard = function (data) {
   var element = templateCard.cloneNode(true);
   setElementParam(element.querySelector('.popup__avatar'), 'src', data.author.avatar);
@@ -164,6 +177,7 @@ var createAndInitCard = function (data) {
   setElementPhotoParam(element, data);
   return element;
 };
+*/
 
 
 // ---- РАБОТА С ФОРМОЙ НОВОГО ОБЪЯВЛЕНИЯ ---
@@ -254,4 +268,5 @@ window.onload = function () {
 };
 
 // Добавяет карточку
+// Закомментено по заданию
 // document.querySelector('.map').insertBefore(createAndInitCard(adList[0]), document.querySelector('.map__filters-container'));
