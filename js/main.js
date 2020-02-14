@@ -5,15 +5,14 @@
 var PIN_COUNT = 8;
 var availableCheckinAndCheckout = ['12:00', '13:00', '14:00'];
 var availableTypes = ['palace', 'flat', 'house', 'bungalo'];
-// Закомментено по заданию
-/*
+
 var availableTypesDictionary = {
   palace: 'Дворец',
   flat: 'Квартира',
   house: 'Дом',
   bungalo: 'Бунгало'
 };
-*/
+
 var availableFeatures = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var startLocationX = 0;
 var START_LOCATION_Y = 130;
@@ -26,13 +25,14 @@ var MAX_FEATURES = 10;
 var MAX_ROOMS = 5;
 var MAX_GUESTS = 10;
 var MAX_OBJECT = 8;
+var pinsObjectsArr = [];
 
 
 // ---- DOM ЭЛЕМЕНТЫ ----
 
 var templatePinElement = document.querySelector('#pin').content.querySelector('button');
-// Закомментено по заданию
-// var templateCard = document.querySelector('#card').content.querySelector('article');
+var templateCard = document.querySelector('#card').content.querySelector('article');
+var mapElement = document.querySelector('.map');
 var mapPinMainElement = document.querySelector('.map__pin--main');
 var mainFormElement = document.querySelector('.ad-form');
 
@@ -83,12 +83,13 @@ var getRandomPhotos = function (count) {
 // ---- РАБОТА С ЗАПОЛНЕНИЕМ DOM ИНФОРМАЦИЕЙ ОБ ОБЪЯВЛЕНИЯХ ----
 
 // Создание DOM элемента метки
-var createPinDOMElement = function (data) {
+var createPinDOMElement = function (data, index) {
   var element = templatePinElement.cloneNode(true);
   element.style.left = data.location.x + 'px';
   element.style.top = data.location.y + 'px';
   element.querySelector('img').src = data.author.avatar;
   element.querySelector('img').alt = data.offer.title;
+  element.setAttribute('data-index', index);
   return element;
 };
 
@@ -123,18 +124,17 @@ var createPins = function (count) {
 };
 
 // Добавляет метки на карту
+
 var renderPins = function (pins) {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < pins.length; i++) {
-    fragment.appendChild(createPinDOMElement(pins[i]));
+    fragment.appendChild(createPinDOMElement(pins[i], i));
   }
   document.querySelector('.map__pins').appendChild(fragment);
 };
 
 // Устанавливает значение параметра или скрывает весь элемент при отсутствии данных
 
-// Закомментено по заданию
-/*
 var setElementParam = function (element, param, value) {
   if (!value) {
     element.style.display = 'none';
@@ -142,11 +142,9 @@ var setElementParam = function (element, param, value) {
     element[param] = value;
   }
 };
-*/
 
 // Добавляет в карточку фотограции или скрывает весь элемент при отсутствии фотографий
-// Закомментено по заданию
-/*
+
 var setElementPhotoParam = function (element, source) {
   if (!source.offer.photos) {
     element.querySelector('.popup__photo').style.display = 'none';
@@ -161,11 +159,9 @@ var setElementPhotoParam = function (element, source) {
     element.querySelector('.popup__photos').appendChild(imgFragment);
   }
 };
-*/
 
 // Создает и заполняет карточку
-// Закомментено по заданию
-/*
+
 var createAndInitCard = function (data) {
   var element = templateCard.cloneNode(true);
   setElementParam(element.querySelector('.popup__avatar'), 'src', data.author.avatar);
@@ -180,7 +176,6 @@ var createAndInitCard = function (data) {
   setElementPhotoParam(element, data);
   return element;
 };
-*/
 
 
 // ---- РАБОТА С ФОРМОЙ НОВОГО ОБЪЯВЛЕНИЯ ---
@@ -216,10 +211,31 @@ var disableForms = function () {
 
 var enableForms = function (evt) {
   if (typeof evt === 'object' && evt.button === 0) {
-    document.querySelector('.map').classList.remove('map--faded');
+    mapElement.classList.remove('map--faded');
     mainFormElement.classList.remove('ad-form--disabled');
-    renderPins(createPins(PIN_COUNT));
+    pinsObjectsArr = createPins(PIN_COUNT);
+    renderPins(pinsObjectsArr);
     toggleFormsState('disabled');
+    // TODO 4 esc and X button
+    var pinsButtons = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+
+    pinsButtons.forEach(function (item) {
+      item.addEventListener('click', function (e) {
+        var oldCardElement = mapElement.querySelector('.map__card');
+        if (oldCardElement) {
+          mapElement.removeChild(oldCardElement);
+        }
+
+        var index = e.currentTarget.getAttribute('data-index');
+        mapElement.insertBefore(createAndInitCard(pinsObjectsArr[parseInt(index, 10)]), document.querySelector('.map__filters-container'));
+        var newCardElement = mapElement.querySelector('.map__card');
+        newCardElement.querySelector('.popup__close').addEventListener('click', function () {
+          if (newCardElement) {
+            mapElement.removeChild(newCardElement);
+          }
+        });
+      });
+    });
   }
 };
 
@@ -261,6 +277,8 @@ var checkValidityInputRooms = function () {
   }
 };
 
+
+
 // ---- ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ ----
 
 window.onload = function () {
@@ -272,6 +290,3 @@ window.onload = function () {
   mainFormElement.querySelector('.ad-form__submit').addEventListener('click', checkValidityInputRooms);
 };
 
-// Добавяет карточку
-// Закомментено по заданию
-// document.querySelector('.map').insertBefore(createAndInitCard(adList[0]), document.querySelector('.map__filters-container'));
