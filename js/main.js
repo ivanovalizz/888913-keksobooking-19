@@ -277,8 +277,6 @@ var checkValidityInputRooms = function () {
   }
 };
 
-
-
 // ---- ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ ----
 
 window.onload = function () {
