@@ -25,6 +25,7 @@ var MAX_FEATURES = 10;
 var MAX_ROOMS = 5;
 var MAX_GUESTS = 10;
 var MAX_OBJECT = 8;
+var MIN_TITLE_LENGTH = 30;
 var pinsObjectsArr = [];
 
 
@@ -241,6 +242,7 @@ var enableForms = function (evt) {
 
 // ---- ОГРАНИЧЕНИЯ ПОЛЕЙ ФОРМЫ ----
 
+// Заполнение полей 'Количество комнат' и 'Количество гостей'
 var checkValidityInputRooms = function () {
   var roomsSelect = mainFormElement.querySelector('#room_number');
   var capacitySelect = mainFormElement.querySelector('#capacity');
@@ -277,6 +279,64 @@ var checkValidityInputRooms = function () {
   }
 };
 
+// Проверка поля 'Заголовок объявления' на валидность
+var inputTitle = document.querySelector('#title');
+
+inputTitle.addEventListener('invalid', function () {
+  if (inputTitle.validity.tooShort) {
+    inputTitle.setCustomValidity('Имя должно состоять минимум из 30 символов');
+  } else if (inputTitle.validity.tooLong) {
+    inputTitle.setCustomValidity('Имя не должно превышать 100 символов');
+  } else if (inputTitle.validity.valueMissing) {
+    inputTitle.setCustomValidity('Обязательное поле');
+  } else {
+    inputTitle.setCustomValidity('');
+  }
+});
+
+inputTitle.addEventListener('input', function (evt) {
+  var target = evt.target;
+  if (target.value.length < MIN_TITLE_LENGTH) {
+    target.setCustomValidity('Имя должно состоять минимум из ' + MIN_TITLE_LENGTH + '-х символов');
+  } else {
+    target.setCustomValidity('');
+  }
+});
+
+// Проверка полей 'Тип жилья' и 'Зена за ночь' на валидность
+var checkValiditySelectType = function () {
+
+  var inputPrice = document.querySelector('#price');
+  var selectType = document.querySelector('#type');
+
+  switch (selectType.value) {
+    case 'bungalo': {
+      inputPrice.setAttribute('placeholder', '0');
+      inputPrice.setAttribute('min', '0');
+      return;
+    }
+    case 'flat': {
+      inputPrice.setAttribute('placeholder', '1000');
+      inputPrice.setAttribute('min', '1000');
+      return;
+    }
+    case 'house': {
+      inputPrice.setAttribute('placeholder', '5000');
+      inputPrice.setAttribute('min', '5000');
+      return;
+    }
+    case 'palace': {
+      inputPrice.setAttribute('placeholder', '10000');
+      inputPrice.setAttribute('min', '10000');
+      return;
+    }
+    default: {
+      inputPrice.setAttribute('placeholder', '5000');
+      inputPrice.setAttribute('min', '0');
+    }
+  }
+};
+
 // ---- ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ ----
 
 window.onload = function () {
@@ -284,7 +344,9 @@ window.onload = function () {
 
   addAddressInputValue();
   mainFormElement.querySelector('#room_number').addEventListener('change', checkValidityInputRooms);
+  mainFormElement.querySelector('#type').addEventListener('change', checkValiditySelectType);
   mapPinMainElement.addEventListener('mousedown', enableForms);
   mainFormElement.querySelector('.ad-form__submit').addEventListener('click', checkValidityInputRooms);
+  mainFormElement.querySelector('.ad-form__submit').addEventListener('click', checkValiditySelectType);
 };
 
