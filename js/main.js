@@ -210,33 +210,43 @@ var disableForms = function () {
   toggleFormsState('disabled', 'true');
 };
 
-var enableForms = function (evt) {
-  if (typeof evt === 'object' && evt.button === 0) {
-    mapElement.classList.remove('map--faded');
-    mainFormElement.classList.remove('ad-form--disabled');
-    pinsObjectsArr = createPins(PIN_COUNT);
-    renderPins(pinsObjectsArr);
-    toggleFormsState('disabled');
-    // TODO 4 esc and X button
-    var pinsButtons = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+var isActivePage = false;
 
-    pinsButtons.forEach(function (item) {
-      item.addEventListener('click', function (e) {
-        var oldCardElement = mapElement.querySelector('.map__card');
-        if (oldCardElement) {
-          mapElement.removeChild(oldCardElement);
+var subscribeOnPinButtonsClick = function () {
+  var pinsButtons = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+
+  pinsButtons.forEach(function (item) {
+    item.addEventListener('click', function (e) {
+      var oldCardElement = mapElement.querySelector('.map__card');
+      if (oldCardElement) {
+        mapElement.removeChild(oldCardElement);
+      }
+
+      var index = e.currentTarget.getAttribute('data-index');
+      mapElement.insertBefore(createAndInitCard(pinsObjectsArr[parseInt(index, 10)]), document.querySelector('.map__filters-container'));
+      var newCardElement = mapElement.querySelector('.map__card');
+      newCardElement.querySelector('.popup__close').addEventListener('click', function () {
+        if (newCardElement) {
+          mapElement.removeChild(newCardElement);
         }
-
-        var index = e.currentTarget.getAttribute('data-index');
-        mapElement.insertBefore(createAndInitCard(pinsObjectsArr[parseInt(index, 10)]), document.querySelector('.map__filters-container'));
-        var newCardElement = mapElement.querySelector('.map__card');
-        newCardElement.querySelector('.popup__close').addEventListener('click', function () {
-          if (newCardElement) {
-            mapElement.removeChild(newCardElement);
-          }
-        });
       });
     });
+  });
+};
+
+// Активация страницы и формы
+var activatePage = function () {
+  if (isActivePage === false) {
+    mapElement.classList.remove('map--faded'); // Активация карты
+
+    mainFormElement.classList.remove('ad-form--disabled'); // Активация формы
+    toggleFormsState('disabled');
+
+    pinsObjectsArr = createPins(PIN_COUNT);
+    renderPins(pinsObjectsArr); // Отрисовка пинов на карте
+    subscribeOnPinButtonsClick(); // Подписка на клик по пинам для открытия карточки
+
+    isActivePage = true;
   }
 };
 
@@ -345,7 +355,7 @@ window.onload = function () {
   addAddressInputValue();
   mainFormElement.querySelector('#room_number').addEventListener('change', checkValidityInputRooms);
   mainFormElement.querySelector('#type').addEventListener('change', checkValiditySelectType);
-  mapPinMainElement.addEventListener('mousedown', enableForms);
+  mapPinMainElement.addEventListener('mousedown', activatePage);
   mainFormElement.querySelector('.ad-form__submit').addEventListener('click', checkValidityInputRooms);
   mainFormElement.querySelector('.ad-form__submit').addEventListener('click', checkValiditySelectType);
 };
