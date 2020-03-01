@@ -163,7 +163,7 @@ var setElementPhotoParam = function (element, source) {
 
 // Создает и заполняет карточку
 
-var createAndInitCard = function (data) {
+var renderCardElement = function (data) {
   var element = templateCard.cloneNode(true);
   setElementParam(element.querySelector('.popup__avatar'), 'src', data.author.avatar);
   setElementParam(element.querySelector('.popup__title'), 'textContent', data.offer.title);
@@ -212,6 +212,13 @@ var disableForms = function () {
 
 var isActivePage = false;
 
+var closeCard = function () {
+  var newCardElement = mapElement.querySelector('.map__card');
+  if (newCardElement) {
+    mapElement.removeChild(newCardElement);
+  }
+};
+
 var subscribeOnPinButtonsClick = function () {
   var pinsButtons = document.querySelectorAll('.map__pin:not(.map__pin--main)');
 
@@ -223,11 +230,12 @@ var subscribeOnPinButtonsClick = function () {
       }
 
       var index = e.currentTarget.getAttribute('data-index');
-      mapElement.insertBefore(createAndInitCard(pinsObjectsArr[parseInt(index, 10)]), document.querySelector('.map__filters-container'));
-      var newCardElement = mapElement.querySelector('.map__card');
-      newCardElement.querySelector('.popup__close').addEventListener('click', function () {
-        if (newCardElement) {
-          mapElement.removeChild(newCardElement);
+      mapElement.insertBefore(renderCardElement(pinsObjectsArr[parseInt(index, 10)]), document.querySelector('.map__filters-container'));
+
+      mapElement.querySelector('.map__card .popup__close').addEventListener('click', closeCard);
+      document.addEventListener('keydown', function (event) {
+        if (event && event.code === 'Escape') {
+          closeCard();
         }
       });
     });
@@ -236,7 +244,7 @@ var subscribeOnPinButtonsClick = function () {
 
 // Активация страницы и формы
 var activatePage = function () {
-  if (isActivePage === false) {
+  if (!isActivePage) {
     mapElement.classList.remove('map--faded'); // Активация карты
 
     mainFormElement.classList.remove('ad-form--disabled'); // Активация формы
