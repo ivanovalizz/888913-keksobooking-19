@@ -17,7 +17,7 @@ var activatePage = function () {
     mainFormElement.classList.remove('ad-form--disabled'); // Активация формы
     window.form.toggleFormsState('disabled');
 
-    pinsObjectsArr = window.pin.createPins(PIN_COUNT);
+    pinsObjectsArr = window.data.createPins(PIN_COUNT);
     window.map.renderPins(pinsObjectsArr); // Отрисовка пинов на карте
     window.form.subscribeOnPinButtonsClick(pinsObjectsArr); // Подписка на клик по пинам для открытия карточки
 

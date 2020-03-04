@@ -2,10 +2,15 @@
 
 (function () {
   var MIN_TITLE_LENGTH = 30;
+  var availableCheckinAndCheckout = ['12:00', '13:00', '14:00'];
 
   var mapPinMainElement = document.querySelector('.map__pin--main');
   var mapElement = document.querySelector('.map');
   var mainFormElement = document.querySelector('.ad-form');
+
+  var getRandomCheckinAndCheckout = function () {
+    return availableCheckinAndCheckout[window.data.getRandomInt(0, availableCheckinAndCheckout.length - 1)];
+  };
 
   var addAddressInputValue = function () {
     document.querySelector('#address').value = mapPinMainElement.offsetTop + ', ' + mapPinMainElement.offsetLeft;
@@ -169,5 +174,6 @@
     subscribeOnPinButtonsClick: subscribeOnPinButtonsClick,
     checkValidityInputRooms: checkValidityInputRooms,
     checkValiditySelectType: checkValiditySelectType,
+    getRandomCheckinAndCheckout: getRandomCheckinAndCheckout,
   };
 })();
