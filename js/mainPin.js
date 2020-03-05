@@ -38,7 +38,7 @@
       if (dragged) {
         var onClickPreventDefault = function (clickEvt) {
           clickEvt.preventDefault();
-          mapPinMainElement.removeEventListener('click', onClickPreventDefault)
+          mapPinMainElement.removeEventListener('click', onClickPreventDefault);
         };
         mapPinMainElement.addEventListener('click', onClickPreventDefault);
       }
